@@ -30,7 +30,6 @@ function Message(msgText, styleClass) {
  *  4. Check if guess is lower or higher
  */
 function checkGuessValue(currentGuess, maxAttempts, randomMasterValue) {
-  
   performRangeValidation(currentGuess, 0, 10);
 
   numberOfAttempts = incrementNumberOfAttempts(numberOfAttempts, maxAttempts);
@@ -64,14 +63,39 @@ function setSuccess(selector, message) {
  *
  */
 function incrementNumberOfAttempts(attemptsSoFar, maxAttempts) {
+
+  if(attemptsSoFar < 0 || maxAttempts < 0 || isNaN(attemptsSoFar) || isNaN(maxAttempts)) {
+    throw new Error(`Invalid arguments`);
+  }
+
   if (attemptsSoFar >= maxAttempts) {
     throw new Error(`Sorry, Number of attempts expired`);
   }
   return attemptsSoFar + 1;
 }
 
+function convertStringToNumber(str) {
+  return parseInt(str);
+}
+
 function performRangeValidation(val, min, max) {
-  if (val && parseInt(val) > parseInt(min) && parseInt(val) < parseInt(max)) {
+
+  if (!val || !min || !max) {
+    throw new Error(`Function expects 3 input arguments`);
+  }
+
+  if (isNaN(min)) {
+    throw new Error(`Invalid min value: ${min}`);
+  }
+
+  if (isNaN(max)) {
+    throw new Error(`Invalid max value: ${max}`);
+  }
+
+  if (
+    parseInt(val) > parseInt(min) &&
+    parseInt(val) < parseInt(max)
+  ) {
     return parseInt(val);
   } else {
     throw new Error(
@@ -80,9 +104,9 @@ function performRangeValidation(val, min, max) {
   }
 }
 
-function setMessage(selector, {text, styleClass}) {
+function setMessage(selector, { text, styleClass }) {
   document.querySelector(selector).textContent = text;
   document.querySelector(selector).className = styleClass;
 }
 
-module.exports = { performRangeValidation };
+module.exports = { performRangeValidation, incrementNumberOfAttempts };
